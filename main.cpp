@@ -1,3 +1,4 @@
+#include <array>
 #include <ctime>
 #include <cstdlib>
 #include <iostream>
@@ -8,14 +9,38 @@ int random_pick(int min, int max)
     return std::rand() % (max - min + 1) + min;
 }
 
-std::string f3()
+int split(int sum)
 {
-    const int p1 = random_pick(25, 29);
-    const int p2 = random_pick(25, 29);
-    const int p3 = random_pick(25, 29);
+    const auto fn = [sum]() -> int
+    {
+        if(sum % 10 == 9){
+            return random_pick(sum / 3, sum / 2);
+        }
+
+        const int sum_ones_digit = sum % 10; // 0 ~ 8
+
+        const int p1_ones_digit = random_pick(sum_ones_digit + 1, 9);
+        const int p1_tens_digit = random_pick(sum / 3, sum / 2) / 10;
+
+        return p1_tens_digit * 10 + p1_ones_digit;
+    };
+
+    while(true){
+        if(auto p = fn(); p < sum){
+            return p;
+        }
+    }
+    return 0;
+}
+
+std::string f3(int sum)
+{
+    const int p3 = split(sum);
+    const int p2 = split(sum - p3);
+    const int p1 = sum - p2 - p3;
 
     char buf[128];
-    switch(std::rand() % 3){
+    switch(std::rand() % 4){
         case 0:
             {
                 std::sprintf(buf, "%2d + %2d + %2d =", p1, p2, p3);
@@ -23,50 +48,47 @@ std::string f3()
             }
         case 1:
             {
-                std::sprintf(buf, "%2d + %2d - %2d =", p1 + p2, p3, p1);
+                std::sprintf(buf, "%2d + %2d - %2d =", p1 + p2, p3, split(p1 + p2 + p3));
+                break;
+            }
+        case 2:
+            {
+                std::sprintf(buf, "%2d - %2d + %2d =", p1 + p2 + p3, p3, split(p1 + p2));
                 break;
             }
         default:
             {
-                std::sprintf(buf, "%2d - %2d + %2d =", p1 + p2, p1, p3);
+                std::sprintf(buf, "%2d - %2d - %2d =", p1 + p2 + p3, p3, p2);
                 break;
             }
     }
     return buf;
 }
 
-std::string f2()
+int main(int argc, char *argv[])
 {
-    const int p1 = random_pick(25, 29);
-    const int p2 = random_pick(25, 29);
-
-    char buf[128];
-    if(std::rand() % 2){
-        std::sprintf(buf, "%2d + %2d =", p1, p2);
-    }
-    else{
-        std::sprintf(buf, "%2d - %2d =", p1 + p2, p2);
+    if(argc != 3){
+        std::fprintf(stderr, "Usage: calc max_sum lines\n");
+        return 1;
     }
 
-    return buf;
-}
-
-int main(int, char *argv[])
-{
     std::srand(std::time(nullptr));
 
-    const int digits = std::atoi(argv[1]);
-    const int  lines = std::atoi(argv[2]);
+    const int max_sum = std::atoi(argv[1]);
+    const int lines   = std::atoi(argv[2]);
 
-    if(digits == 2){
-        for(int j = 0; j < lines; ++j){
-            std::cout << f2() << "       " << f2() << "       " << f2() << std::endl;
-        }
+    if(max_sum < 30 || max_sum >= 100){
+        std::fprintf(stderr, "max_sum must be >= 30 and < 100\n");
+        return 1;
     }
-    else if(digits == 3){
-        for(int j = 0; j < lines; ++j){
-            std::cout << f3() << "       " << f3() << "       " << f3() << "       " << f3() << std::endl;
-        }
+
+    if(lines < 1){
+        std::fprintf(stderr, "lines must be >= 1\n");
+        return 1;
+    }
+
+    for(int i = 0; i < lines; ++i){
+        std::cout << f3(max_sum) << "       " << f3(max_sum) << "       " << f3(max_sum) << "       " << f3(max_sum) << std::endl;
     }
     return 0;
 }
