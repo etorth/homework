@@ -60,12 +60,12 @@ int main(int, char *argv[])
 
     if(digits == 2){
         for(int j = 0; j < lines; ++j){
-            std::cout << f2() << "          " << f2() << "          " << f2() << std::endl;
+            std::cout << f2() << "       " << f2() << "       " << f2() << std::endl;
         }
     }
     else if(digits == 3){
         for(int j = 0; j < lines; ++j){
-            std::cout << f3() << "          " << f3() << "          " << f3() << "          " << f3() << std::endl;
+            std::cout << f3() << "       " << f3() << "       " << f3() << "       " << f3() << std::endl;
         }
     }
     return 0;
