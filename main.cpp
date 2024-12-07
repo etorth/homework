@@ -1,4 +1,3 @@
-#include <array>
 #include <ctime>
 #include <cstdlib>
 #include <iostream>
@@ -11,7 +10,7 @@ int random_pick(int min, int max)
 
 int split(int sum)
 {
-    const auto fn = [sum]() -> int
+    const auto fnsplit = [sum]() -> int
     {
         if(sum % 10 == 9){
             return random_pick(sum / 3, sum / 2);
@@ -26,15 +25,20 @@ int split(int sum)
     };
 
     while(true){
-        if(auto p = fn(); p < sum){
+        if(auto p = fnsplit(); p < sum){
             return p;
         }
     }
-    return 0;
+    return 0; // never reach
 }
 
-std::string f3(int sum)
+std::string f3(int max_sum)
 {
+    const int sum = random_pick(max_sum - 10, max_sum);
+
+    // (p1     ) + p2 is hard
+    // (p1 + p2) + p3 is hard
+
     const int p3 = split(sum);
     const int p2 = split(sum - p3);
     const int p1 = sum - p2 - p3;
