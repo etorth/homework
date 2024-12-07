@@ -65,7 +65,7 @@ int main(int, char *argv[])
     }
     else if(digits == 3){
         for(int j = 0; j < lines; ++j){
-            std::cout << f3() << "          " << f3() << std::endl;
+            std::cout << f3() << "          " << f3() << "          " << f3() << "          " << f3() << std::endl;
         }
     }
     return 0;
